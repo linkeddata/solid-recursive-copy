@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "build-lib": "babel src -d lib",
-    "build-browserified": "browserify -r ./src/shacl-check.js -t babelify --exclude 'xhr2' > dist/shacl-check.js",
-    "build-minified": "browserify -r ./src/index.js:shacl-check -t babelify --exclude 'xhr2' -d -p [minifyify --no-map] > dist/solid.min.js",
+    "build-browserified": "browserify -r ./src/recurse.js -t babelify --exclude 'xhr2' > dist/solid-recursive-copy.js",
+    "build-minified": "browserify -r ./src/index.js:recurse.js -t babelify --exclude 'xhr2' -d -p [minifyify --no-map] > dist/solid.min.js",
     "prebuild": "npm run clean && mkdir -p dist",
     "build": "npm run build-lib && npm run build-browserified && npm run build-minified",
     "clean": "rm -rf dist/ && rm -rf lib/",
@@ -36,7 +36,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/linkeddata/shacl-check/issues"
+    "url": "https://github.com/linkeddata/solid-recursive-copy/issues"
   },
   "homepage": "https://github.com/linkeddata/solid-recursive-copy",
   "dependencies": {
