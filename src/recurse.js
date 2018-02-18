@@ -19,6 +19,8 @@ module.export = {
 
 
 function deepCopy(src, dest, options, indent = ''){
+  options = options || {}
+  console.log(indent + 'deepCopy ' + src + ' -> ' + dest)
   return new Promise(function(resolve, reject){
     function mapURI(src, dest, x){
       if (!x.uri.startsWith(src.uri)){
@@ -26,7 +28,9 @@ function deepCopy(src, dest, options, indent = ''){
       }
       return kb.sym(dest.uri + x.uri.slice(src.uri.length))
     }
-    fetcher.load(src).then(ok, status, response => {
+    console.log(indent + '1 deepCopy ' + src + ' -> ' + dest)
+    fetcher.load(src).then(function(ok, status, response) {
+      console.log(indent + 'ok:' + ok)
       if (!ok) throw new Error("Error reading container {src}: {status}")
       let contents = kb.each(src, ldp('contains'))
       level += 1
@@ -42,5 +46,20 @@ function deepCopy(src, dest, options, indent = ''){
       }
       Promise.all(promises).then(resolve(true))
     })
+    .catch(error => {
+      console.log('exception: ' + error)
+    })
   })
 }
+
+// TEST ONLY
+
+var source = kb.sym('https://timbl.com/timbl/Public/Test/')
+var destination = kb.sym('https://timbl.databox.me/Public/Test/')
+
+deepCopy(source, destination).then(function(){
+  console.log("Test Finished.")
+})
+
+// wit for end
+//

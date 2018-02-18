@@ -1,0 +1,31 @@
+<html>
+<head>
+  <script src="../dist/recurse-lib.min.js"></script>
+  <script>
+  // Browser-based test for recusrive copy over solid space
+
+  const deepCopy = require('./src/recurse')
+
+  const dom = document
+
+  const source = dom.getElementById('from')
+  const destinsation = dom.getElementById('to')
+  const button = dom.getElementById('go')
+
+  go.addEventListener('click', event => {
+    const from = source.value
+    const to = desination.value
+    deepCopy()
+
+  })
+
+  </script>
+</head>
+<body>
+  <div>
+  <input type="text" name="from" id="from" style="border: 0.1em solid green; font-size: 100%; margin=0.5em;"/>
+  <input type="text" id="to" style="border: 0.1em solid red"/>
+  <button id="go">go</button>
+  </div>
+</body>
+</html>
