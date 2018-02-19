@@ -9,6 +9,7 @@
 const $rdf = require('rdflib')
 
 const ldp = $rdf.Namespace('http://www.w3.org/ns/ldp#')
+const RDF = $rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
 const kb = $rdf.graph()
 const fetcher = $rdf.fetcher(kb)
@@ -33,18 +34,20 @@ function deepCopy(src, dest, options, indent = ''){
       console.log(indent + 'ok:' + ok)
       if (!ok) throw new Error("Error reading container {src}: {status}")
       let contents = kb.each(src, ldp('contains'))
-      level += 1
       promises = []
       for (let i=0; i < contents.length; i++){
         let here = contents[i]
-        let there = mapURI(here)
-        if (kb.holds(here, rdf(type), ldp('Container'))){
-          promises.push(deepCopy(here, mapURI(here), options, indent + '  '))
+        let there = mapURI(src, dest, here)
+        if (kb.holds(here, RDF('type'), ldp('Container'))){
+          promises.push(deepCopy(here, mapURI(src, dest, here), options, indent + '  '))
         } else { // copy a leaf
           promises.push(fetcher.webCopy(here))
         }
       }
-      Promise.all(promises).then(resolve(true))
+      Promise.all(promises).then(resolve(true)).catch(function (e) {
+        console.log("Overall promise rejected: " + e)
+        reject(e)
+      })
     })
     .catch(error => {
       console.log('exception: ' + error)
@@ -59,6 +62,8 @@ var destination = kb.sym('https://timbl.databox.me/Public/Test/')
 
 deepCopy(source, destination).then(function(){
   console.log("Test Finished.")
+}).catch( function (e) {
+  console.log("Failed: e")
 })
 
 // wit for end
