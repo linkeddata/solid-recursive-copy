@@ -31,7 +31,8 @@ function deepCopy(src, dest, options, indent = ''){
     }
     console.log(indent + '1 deepCopy ' + src + ' -> ' + dest)
     fetcher.load(src).then(function(ok, status, response) {
-      console.log(indent + 'ok:' + ok)
+      console.log(indent + '
+      ' + ok)
       if (!ok) throw new Error("Error reading container {src}: {status}")
       let contents = kb.each(src, ldp('contains'))
       promises = []
@@ -39,9 +40,9 @@ function deepCopy(src, dest, options, indent = ''){
         let here = contents[i]
         let there = mapURI(src, dest, here)
         if (kb.holds(here, RDF('type'), ldp('Container'))){
-          promises.push(deepCopy(here, mapURI(src, dest, here), options, indent + '  '))
+          promises.push(deepCopy(here, there, options, indent + '  '))
         } else { // copy a leaf
-          promises.push(fetcher.webCopy(here))
+          promises.push(fetcher.webCopy(here, there))
         }
       }
       Promise.all(promises).then(resolve(true)).catch(function (e) {
