@@ -29,11 +29,10 @@ function deepCopy(src, dest, options, indent = ''){
       }
       return kb.sym(dest.uri + x.uri.slice(src.uri.length))
     }
-    console.log(indent + '1 deepCopy ' + src + ' -> ' + dest)
-    fetcher.load(src).then(function(ok, status, response) {
-      console.log(indent + '
-      ' + ok)
-      if (!ok) throw new Error("Error reading container {src}: {status}")
+    console.log(indent + ' deepCopy ' + src + ' -> ' + dest)
+    fetcher.load(src).then(function(response) {
+      console.log(indent + '  ok = ' + response.status)
+      if (!response.ok) throw new Error('Error reading container ' + src + ' : ' + response.status)
       let contents = kb.each(src, ldp('contains'))
       promises = []
       for (let i=0; i < contents.length; i++){
@@ -51,7 +50,7 @@ function deepCopy(src, dest, options, indent = ''){
       })
     })
     .catch(error => {
-      console.log('exception: ' + error)
+      console.log('Load error: ' + error)
     })
   })
 }
